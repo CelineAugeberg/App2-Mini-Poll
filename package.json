@@ -1,0 +1,15 @@
+{
+  "name": "app2-mini-poll",
+  "private": true,
+  "scripts": {
+    "dev": "node server/index.js",
+    "client": "parcel client/index.html"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "parcel": "^2.16.3"
+  }
+}
+
