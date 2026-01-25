@@ -1,7 +1,6 @@
 
 const express = require("express");
-const validatePoll = require("./server/middleware/validatePoll.js");
-
+const validatePoll = require("./middleware/validatePoll");
 
 const app = express();
 const PORT = 3000;

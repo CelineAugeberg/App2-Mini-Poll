@@ -6,8 +6,7 @@
     "client": "parcel client/index.html"
   },
   "dependencies": {
-    "express": "^5.2.1",
-    "middleware_poll": "file:../Middleware_poll"
+    "express": "^5.2.1"
   },
   "devDependencies": {
     "parcel": "^2.16.3"
