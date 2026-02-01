@@ -29,3 +29,15 @@ GET /polls/:pollId/results returns poll results. Response: 200 OK
 
 ### Testing
 The API is tested using postman. The exported test collection is included in the repository.
+
+## User data & GDPR consideration
+
+This application collects the following data:
+- Username (used as a unique identifier for the user)
+- Password hash (used for authentication)
+- Consent information ( TOS & Privacy acceptance, timestamp and version)
+
+The collected data is only used to:
+- Create and manage user accounts
+- Authenticate users
+- Record user consent
