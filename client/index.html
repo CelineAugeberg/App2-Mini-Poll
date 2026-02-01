@@ -11,16 +11,26 @@
         <label for="username"> Username: </label><input id="signupUsername" type="text">
         <label for="password"> Password: </label><input id="signupPassword" type="password">
 
-        <button id="signupBtn" type="submit">Sign up</button>
+        <button id="signupBtn" type="button">Sign up</button>
         <input id="signupConsent" type="checkbox"> <p>I have read and accepted the Privacy Policy & Terms of Service</p>
     </div>
 
     <div class="signIn">
         <label for="username"> Username: </label><input id="loginUsername" type="text">
         <label for="password"> Password: </label><input id="loginPassword" type="password">
-        <button id="loginBtn" type="submit">Login</button>
+        <button id="loginBtn" type="button">Login</button>
     </div>
     <div id="app"></div>
+
+    <div id="dashboard" hidden>
+  <h2>Welcome</h2>
+  <p id="welcomeText"></p>
+  <button id="deleteBtn" type="button">Delete my account</button>
+  <button id="logoutBtn" type="button">Log out</button>
+</div>
+
+<p id="status"></p>
+
     <script type="module" src="./app.js"></script>
     
 </body>

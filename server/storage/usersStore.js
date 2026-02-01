@@ -1,57 +1,41 @@
-
 const userDatabase = [];
 let nextId = 1;
 
-function normalizeUsername(username) {
-    return String(username || "").trim().toLowerCase();
+function clean(username) {
+  return String(username || "").trim().toLowerCase();
 }
 
 async function findUserByUsername(username) {
-    let normalized = normalizeUsername(username);
-
-    let foundUser = userDatabase.find(user => {
-        return user.username.toLowerCase() === normalized;
-    });
-    return Promise.resolve(foundUser || null);
-}
-
-async function findUserById(id) {
-    let foundUser = userDatabase.find(user => user.id === Number(id));
-    return Promise.resolve(foundUser || null);
+  const u = clean(username);
+  return Promise.resolve(userDatabase.find(x => x.username === u) || null);
 }
 
 async function createUser(username, passwordHash, consent) {
-    let normalized = normalizeUsername(username);
+  const u = clean(username);
 
-     let existing = userDatabase.find(user => user.username.toLowerCase() === normalized);
-    if (existing) {
-        return Promise.resolve(null); 
-    }
+  const user = {
+    id: nextId++,
+    username: u,
+    passwordHash,
+    consent: !!consent
+  };
 
-    let newUser = {
-        id: nextId++,
-        username: normalized,
-        passwordHash: passwordHash,
-        createdAt: new Date().toISOString(),
-        consent: {
-            acceptedTos: !!consent.acceptedTos,
-            acceptedPrivacy: !!consent.acceptedPrivacy,
-            acceptedAt: new Date().toISOString(),
-            version: consent.version || "1.0"
-        }
-    };
-        userDatabase.push(newUser);
-
-    return Promise.resolve(newUser);
+  userDatabase.push(user);
+  return Promise.resolve(user);
 }
 
-async function listUsers() {
-    return Promise.resolve(userDatabase);
+async function deleteUserById(id) {
+  id = Number(id);
+  const i = userDatabase.findIndex(x => x.id === id);
+  if (i === -1) return Promise.resolve(false);
+  userDatabase.splice(i, 1);
+  return Promise.resolve(true);
 }
 
 module.exports = {
-    findUserByUsername,
-    findUserById,
-    createUser,
-    listUsers
+  findUserByUsername,
+  createUser,
+  deleteUserById
 };
+
+
