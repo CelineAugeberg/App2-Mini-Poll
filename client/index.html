@@ -8,15 +8,17 @@
 <body>
     <h1>Mini Poll</h1>
     <div class="signUp">
-        <label> Email: </label><input type="email">
-        <label> Password: </label><input type="password">
+        <label for="username"> Username: </label><input id="signupUsername" type="text">
+        <label for="password"> Password: </label><input id="signupPassword" type="password">
 
-        <input type="checkbox"> <p>I have read and accepted the Privacy Policy & Terms of Service</p>
+        <button id="signupBtn" type="submit">Sign up</button>
+        <input id="signupConsent" type="checkbox"> <p>I have read and accepted the Privacy Policy & Terms of Service</p>
     </div>
 
     <div class="signIn">
-        <label> Email: </label><input type="email">
-        <label> Password: </label><input type="password">
+        <label for="username"> Username: </label><input id="loginUsername" type="text">
+        <label for="password"> Password: </label><input id="loginPassword" type="password">
+        <button id="loginBtn" type="submit">Login</button>
     </div>
     <div id="app"></div>
     <script type="module" src="./app.js"></script>
