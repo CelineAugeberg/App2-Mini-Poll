@@ -1,4 +1,4 @@
-// public/client/data/api_service.mjs
+
 class ApiService {
   static #instance;
 
@@ -14,7 +14,7 @@ class ApiService {
       headers["Content-Type"] = "application/json";
     }
 
-    // Serveren din bruker x-access-auth
+
     if (token) {
       headers["x-access-auth"] = token;
     }
@@ -25,7 +25,6 @@ class ApiService {
       body: data !== null ? JSON.stringify(data) : undefined,
     });
 
-    // Prøv å lese JSON hvis mulig
     const ct = res.headers.get("content-type") || "";
     const payload = ct.includes("application/json")
       ? await res.json().catch(() => null)
