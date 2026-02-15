@@ -1,111 +1,110 @@
-const API_BASE = "http://localhost:3000";
-let authToken = null;
 
-const signupUsername = document.getElementById("signupUsername");
-const signupPassword = document.getElementById("signupPassword");
-const signupConsent = document.getElementById("signupConsent");
-const signupBtn = document.getElementById("signupBtn");
 
-const loginUsername = document.getElementById("loginUsername");
-const loginPassword = document.getElementById("loginPassword");
-const loginBtn = document.getElementById("loginBtn");
 
-const dashboardEl = document.getElementById("dashboard");
-const welcomeText = document.getElementById("welcomeText");
-const deleteBtn = document.getElementById("deleteBtn");
-const logoutBtn = document.getElementById("logoutBtn");
+import "./views/user_app.mjs";
+import "./views/user_created.mjs";
+import "./views/user_login.mjs";
+import "./views/user_settings.mjs";
 
-const statusEl = document.getElementById("status");
+
+import { signup, login, logout } from "./controller/auth_controller.mjs";
+import { deleteMyAccount, updatePassword } from "./controller/user_controller.mjs";
+import { getAuth } from "./controller/auth_controller.mjs";
+
+
+const root = document.querySelector("user-app");
+if (!root) throw new Error("<user-app> not found");
+
 
 function setStatus(msg) {
-  statusEl.textContent = msg || "";
+
+  if (typeof root.setStatus === "function") return root.setStatus(msg);
+
+
+  const el = root.querySelector("#status");
+  if (el) el.textContent = msg || "";
 }
 
-function showDashboard(username) {
-  dashboardEl.hidden = false;
-  welcomeText.textContent = `Welcome, ${username}`;
+
+function rerender() {
+  if (typeof root.render === "function") root.render(getAuth());
 }
 
-function hideDashboard() {
-  dashboardEl.hidden = true;
-  welcomeText.textContent = "";
-}
 
-async function signUp() {
+root.addEventListener("signup", async (e) => {
+  const { username, password, consent } = e.detail || {};
   setStatus("");
 
-  const username = signupUsername.value.trim();
-  const password = signupPassword.value;
+  if (!username || !password) return setStatus("Username and password required.");
+  if (!consent) return setStatus("You must accept ToS & Privacy Policy.");
 
-  if (!signupConsent.checked) return setStatus("You must accept ToS & Privacy Policy");
-
-  const res = await fetch(`${API_BASE}/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password, consent: true })
-  });
-
-  if (res.status === 201) {
+  try {
+    await signup({ username, password, consent: true });
     setStatus("User created. Now log in.");
-    loginUsername.value = username;
-    loginPassword.value = password;
-  } else if (res.status === 409) {
-    setStatus("Username already in use");
-  } else {
-    setStatus("Could not create user");
-  }
-}
 
-async function login() {
+ 
+    if (typeof root.prefillLogin === "function") {
+      root.prefillLogin({ username, password });
+    }
+  } catch (err) {
+    setStatus(err.message || "Could not create user");
+  }
+});
+
+root.addEventListener("login", async (e) => {
+  const { username, password } = e.detail || {};
   setStatus("");
 
-  const username = loginUsername.value.trim();
-  const password = loginPassword.value;
+  if (!username || !password) return setStatus("Username and password required.");
 
-  const res = await fetch(`${API_BASE}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
-  });
-
-  const data = await res.json().catch(() => null);
-
-  if (res.status === 200) {
-    authToken = data.auth;
-    showDashboard(data.user.username);
+  try {
+    await login({ username, password });
+    rerender();
     setStatus("");
-  } else {
-    setStatus("Wrong username or password");
+  } catch (err) {
+    setStatus(err.message || "Wrong username or password");
   }
-}
+});
 
-async function deleteAccount() {
+root.addEventListener("updatepassword", async (e) => {
+  const { newPassword } = e.detail || {};
   setStatus("");
 
-  const res = await fetch(`${API_BASE}/users/me`, {
-    method: "DELETE",
-    headers: { "x-access-auth": authToken }
-  });
+  if (!newPassword) return setStatus("New password required.");
 
-  if (res.status === 204) {
-    authToken = null;
-    hideDashboard();
-    setStatus("Account deleted (consent revoked).");
-  } else {
-    setStatus("Could not delete account");
+  try {
+    await updatePassword({ newPassword });
+    setStatus("Password updated successfully!");
+  } catch (err) {
+    setStatus(err.message || "Could not update password");
   }
-}
+});
 
-function logout() {
-  authToken = null;
-  hideDashboard();
+root.addEventListener("deleteaccount", async () => {
+  setStatus("");
+
+  const ok = confirm("Delete your account? This cannot be undone.");
+  if (!ok) return;
+
+  try {
+    await deleteMyAccount();
+    rerender();
+    setStatus("Account deleted (consent revoked).");
+  } catch (err) {
+    setStatus(err.message || "Could not delete account");
+  }
+});
+
+root.addEventListener("logout", () => {
+  logout();
+  rerender();
   setStatus("Logged out");
-}
+});
 
-signupBtn.addEventListener("click", signUp);
-loginBtn.addEventListener("click", login);
-deleteBtn.addEventListener("click", deleteAccount);
-logoutBtn.addEventListener("click", logout);
+
+rerender();
+
+
 
 
 

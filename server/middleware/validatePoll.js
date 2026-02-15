@@ -1,4 +1,6 @@
-function validatePoll(req, res, next) {
+// server/middleware/validatePoll.js
+
+export default function validatePoll(req, res, next) {
   const { question, options } = req.body;
 
   if (!question || typeof question !== "string") {
@@ -11,5 +13,3 @@ function validatePoll(req, res, next) {
 
   next();
 }
-
-module.exports = validatePoll;

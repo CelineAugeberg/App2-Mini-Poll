@@ -1,9 +1,8 @@
-// server/middleware/validateUserCreate.js
 
-module.exports = function validateUserCreate(req, res, next) {
+export default function validateUserCreate(req, res, next) {
   const { username, password, consent } = req.body;
 
-  // username
+
   if (!username || typeof username !== "string") {
     return res.status(400).json({ error: "username is required and must be a string" });
   }
@@ -11,7 +10,7 @@ module.exports = function validateUserCreate(req, res, next) {
     return res.status(400).json({ error: "username must be at least 3 characters" });
   }
 
-  // password
+ 
   if (!password || typeof password !== "string") {
     return res.status(400).json({ error: "password is required and must be a string" });
   }
@@ -19,7 +18,7 @@ module.exports = function validateUserCreate(req, res, next) {
     return res.status(400).json({ error: "password must be at least 8 characters" });
   }
 
-  // consent
+ 
   if (!consent || typeof consent !== "object") {
     return res.status(400).json({ error: "consent is required" });
   }

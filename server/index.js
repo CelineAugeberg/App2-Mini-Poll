@@ -1,30 +1,45 @@
-const express = require("express");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
-const validatePoll = require("./middleware/validatePoll");
-const usersStore = require("./storage/usersStore");
+import express from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+import validatePoll from "./middleware/validatePoll.js";
+import usersStore from "./storage/usersStore.js";
+
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
 
+
+const PORT = process.env.PORT || 3000;
 const SUPER_SECRET_KEY = process.env.TOKEN_KEY || "TransparantWindowsFlyingDonkeys";
 
+
 app.use(express.json());
+
+
+app.use(express.static(path.join(__dirname, "../public/client")));
 
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:1234");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-access-auth");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, OPTIONS");
   next();
 });
+
 
 app.options(/.*/, (req, res) => res.sendStatus(204));
 
 
 app.get("/polls", (req, res) => res.json({ status: "running" }));
-app.post("/polls", validatePoll, (req, res) => res.json({ message: "Poll accepted (scaffold)" }));
+app.post("/polls", validatePoll, (req, res) =>
+  res.json({ message: "Poll accepted (scaffold)" })
+);
 
 
 app.post("/users", async (req, res) => {
@@ -40,7 +55,7 @@ app.post("/users", async (req, res) => {
   const hash = await bcrypt.hash(password, 10);
   const user = await usersStore.createUser(username, hash, true);
 
-  res.status(201).json({ id: user.id, username: user.username });
+  return res.status(201).json({ id: user.id, username: user.username });
 });
 
 
@@ -57,7 +72,7 @@ app.post("/auth/login", async (req, res) => {
   if (!ok) return res.sendStatus(401);
 
   const token = jwt.sign({ id: user.id, username: user.username }, SUPER_SECRET_KEY);
-  res.json({ auth: token, user: { id: user.id, username: user.username } });
+  return res.json({ auth: token, user: { id: user.id, username: user.username } });
 });
 
 
@@ -67,9 +82,9 @@ function validateAuth(req, res, next) {
 
   try {
     req.token = jwt.verify(token, SUPER_SECRET_KEY);
-    next();
+    return next();
   } catch {
-    res.sendStatus(401);
+    return res.sendStatus(401);
   }
 }
 
@@ -77,10 +92,24 @@ function validateAuth(req, res, next) {
 app.delete("/users/me", validateAuth, async (req, res) => {
   const ok = await usersStore.deleteUserById(req.token.id);
   if (!ok) return res.sendStatus(404);
-  res.sendStatus(204);
+  return res.sendStatus(204);
 });
 
+app.patch("/users/me", validateAuth, async (req, res) => {
+  const newPassword = String(req.body.password || "");
+
+  if (!newPassword) return res.sendStatus(400);
+
+  const hash = await bcrypt.hash(newPassword, 10);
+  const ok = await usersStore.updateUserPassword(req.token.id, hash);
+
+  if (!ok) return res.sendStatus(404);
+  return res.sendStatus(200);
+});
+
+
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
 
 
 

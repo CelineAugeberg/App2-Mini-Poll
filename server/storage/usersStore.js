@@ -32,10 +32,20 @@ async function deleteUserById(id) {
   return Promise.resolve(true);
 }
 
-module.exports = {
+async function updateUserPassword(id, newPasswordHash) {
+  id = Number(id);
+  const user = userDatabase.find(x => x.id === id);
+  if (!user) return Promise.resolve(false);
+  user.passwordHash = newPasswordHash;
+  return Promise.resolve(true);
+}
+
+export default {
   findUserByUsername,
   createUser,
-  deleteUserById
+  deleteUserById,
+  updateUserPassword
 };
+
 
 

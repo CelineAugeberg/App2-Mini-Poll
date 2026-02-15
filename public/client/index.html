@@ -4,34 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini Poll App</title>
+    <link rel="stylesheet" href="./app.css" />
 </head>
 <body>
     <h1>Mini Poll</h1>
-    <div class="signUp">
-        <label for="username"> Username: </label><input id="signupUsername" type="text">
-        <label for="password"> Password: </label><input id="signupPassword" type="password">
-
-        <button id="signupBtn" type="button">Sign up</button>
-        <input id="signupConsent" type="checkbox"> <p>I have read and accepted the <a href="./privacy.html" target="_blank">Privacy Policy</a> & <a href="./tos.html" target="_blank">Terms of Service</a></p>
-    </div>
-
-    <div class="signIn">
-        <label for="username"> Username: </label><input id="loginUsername" type="text">
-        <label for="password"> Password: </label><input id="loginPassword" type="password">
-        <button id="loginBtn" type="button">Login</button>
-    </div>
-    <div id="app"></div>
-
-    <div id="dashboard" hidden>
-  <h2>Welcome</h2>
-  <p id="welcomeText"></p>
-  <button id="deleteBtn" type="button">Delete my account</button>
-  <button id="logoutBtn" type="button">Log out</button>
-</div>
-
-<p id="status"></p>
-
-    <script type="module" src="./app.js"></script>
+    <user-app></user-app>
+    <script type="module" src="./app.mjs"></script>
     
 </body>
 </html>
