@@ -1,51 +1,39 @@
-const userDatabase = [];
-let nextId = 1;
+
+
+import store from "./inMemoryStore.js";
+
+const COLLECTION = "users";
 
 function clean(username) {
   return String(username || "").trim().toLowerCase();
 }
 
-async function findUserByUsername(username) {
-  const u = clean(username);
-  return Promise.resolve(userDatabase.find(x => x.username === u) || null);
+async function findByUsername(username) {
+  return store.findOne(COLLECTION, (u) => u.username === clean(username));
+}
+
+async function findById(id) {
+  return store.findOne(COLLECTION, (u) => u.id === Number(id));
 }
 
 async function createUser(username, passwordHash, consent) {
-  const u = clean(username);
-
-  const user = {
-    id: nextId++,
-    username: u,
+  return store.insert(COLLECTION, {
+    username: clean(username),
     passwordHash,
-    consent: !!consent
-  };
-
-  userDatabase.push(user);
-  return Promise.resolve(user);
+    consent: !!consent,
+  });
 }
 
-async function deleteUserById(id) {
-  id = Number(id);
-  const i = userDatabase.findIndex(x => x.id === id);
-  if (i === -1) return Promise.resolve(false);
-  userDatabase.splice(i, 1);
-  return Promise.resolve(true);
+async function deleteUser(id) {
+  return store.removeOne(COLLECTION, (u) => u.id === Number(id));
 }
 
-async function updateUserPassword(id, newPasswordHash) {
-  id = Number(id);
-  const user = userDatabase.find(x => x.id === id);
-  if (!user) return Promise.resolve(false);
-  user.passwordHash = newPasswordHash;
-  return Promise.resolve(true);
+async function updatePassword(id, newPasswordHash) {
+  return store.updateOne(
+    COLLECTION,
+    (u) => u.id === Number(id),
+    { passwordHash: newPasswordHash }
+  );
 }
 
-export default {
-  findUserByUsername,
-  createUser,
-  deleteUserById,
-  updateUserPassword
-};
-
-
-
+export default { findByUsername, findById, createUser, deleteUser, updatePassword };
