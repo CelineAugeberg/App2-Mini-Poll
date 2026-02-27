@@ -13,7 +13,16 @@ class UserApp extends HTMLElement {
     if (statusEl) statusEl.textContent = msg || "";
   }
 
+  #switchTab(tab) {
+    this.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.tab === tab);
+    });
+    this.querySelector("user-created").classList.toggle("hidden", tab !== "signup");
+    this.querySelector("user-login").classList.toggle("hidden", tab !== "login");
+  }
+
   prefillLogin({ username, password }) {
+    this.#switchTab("login");
     const loginComp = this.querySelector("user-login");
     if (loginComp && typeof loginComp.prefill === "function") {
       loginComp.prefill({ username, password });
@@ -26,12 +35,20 @@ class UserApp extends HTMLElement {
     if (!auth || !auth.token) {
       this.innerHTML = `
         <div class="container">
-          <h2>Welcome to Mini Poll</h2>
+          <h2>Mini Poll</h2>
           <p id="status" class="status"></p>
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="signup">Create Account</button>
+            <button class="tab-btn" data-tab="login">Login</button>
+          </div>
           <user-created></user-created>
-          <user-login></user-login>
+          <user-login class="hidden"></user-login>
         </div>
       `;
+
+      this.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => this.#switchTab(btn.dataset.tab));
+      });
     } else {
       this.innerHTML = `
         <div class="container">

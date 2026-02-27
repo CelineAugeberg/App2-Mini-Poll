@@ -20,7 +20,7 @@
     "parcel": "^2.16.3"
   },
   "version": "1.0.0",
-  "description": "https://mini-poll.onrender.com <!-- update this after first deploy -->",
+  "description": "https://mini-poll.onrender.com",
   "main": "index.js",
   "repository": {
     "type": "git",
