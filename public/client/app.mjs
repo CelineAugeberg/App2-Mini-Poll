@@ -5,9 +5,8 @@ import "./views/user_login.mjs";
 import "./views/user_settings.mjs";
 
 
-import { signup, login, logout } from "./controller/auth_controller.mjs";
+import { signup, login, logout, getAuth } from "./controller/auth_controller.mjs";
 import { deleteMyAccount, updatePassword } from "./controller/user_controller.mjs";
-import { getAuth } from "./controller/auth_controller.mjs";
 
 
 const root = document.querySelector("user-app");

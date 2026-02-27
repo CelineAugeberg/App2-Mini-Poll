@@ -1,0 +1,18 @@
+databases:
+  - name: mini-poll-db
+    plan: free
+
+services:
+  - type: web
+    name: mini-poll
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server/index.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mini-poll-db
+          property: connectionString
+      - key: NODE_VERSION
+        value: 20

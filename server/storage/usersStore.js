@@ -1,39 +1,50 @@
+import pg from "pg";
+
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
 
-import store from "./inMemoryStore.js";
-
-const COLLECTION = "users";
-
-function clean(username) {
-  return String(username || "").trim().toLowerCase();
+function toUser(row) {
+  return {
+    id: row.id,
+    username: row.username,
+    passwordHash: row.password_hash,
+    consent: row.consent,
+  };
 }
 
 async function findByUsername(username) {
-  return store.findOne(COLLECTION, (u) => u.username === clean(username));
-}
-
-async function findById(id) {
-  return store.findOne(COLLECTION, (u) => u.id === Number(id));
+  const { rows } = await pool.query(
+    "SELECT * FROM users WHERE username = $1 LIMIT 1",
+    [username.trim().toLowerCase()]
+  );
+  return rows.length ? toUser(rows[0]) : null;
 }
 
 async function createUser(username, passwordHash, consent) {
-  return store.insert(COLLECTION, {
-    username: clean(username),
-    passwordHash,
-    consent: !!consent,
-  });
+  const { rows } = await pool.query(
+    "INSERT INTO users (username, password_hash, consent) VALUES ($1, $2, $3) RETURNING *",
+    [username.trim().toLowerCase(), passwordHash, !!consent]
+  );
+  return toUser(rows[0]);
 }
 
 async function deleteUser(id) {
-  return store.removeOne(COLLECTION, (u) => u.id === Number(id));
+  const { rowCount } = await pool.query(
+    "DELETE FROM users WHERE id = $1",
+    [Number(id)]
+  );
+  return rowCount > 0;
 }
 
 async function updatePassword(id, newPasswordHash) {
-  return store.updateOne(
-    COLLECTION,
-    (u) => u.id === Number(id),
-    { passwordHash: newPasswordHash }
+  const { rowCount } = await pool.query(
+    "UPDATE users SET password_hash = $1 WHERE id = $2",
+    [newPasswordHash, Number(id)]
   );
+  return rowCount > 0;
 }
 
-export default { findByUsername, findById, createUser, deleteUser, updatePassword };
+export default { findByUsername, createUser, deleteUser, updatePassword };
