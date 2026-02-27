@@ -3,23 +3,21 @@ import bcrypt from "bcrypt";
 
 import usersStore from "../storage/usersStore.js";
 import validateAuth from "../middleware/validateAuth.js";
+import validateUserCreate from "../middleware/validateUserCreate.js";
 
 const router = Router();
 
 
-router.post("/", async (req, res) => {
-  const username = String(req.body.username || "").trim();
-  const password = String(req.body.password || "");
-  const consent = !!req.body.consent;
-
-  if (!username || !password) return res.sendStatus(400);
-  if (!consent) return res.status(400).json({ message: "Consent to ToS is required." });
+router.post("/", validateUserCreate, async (req, res) => {
+  const username = String(req.body.username).trim();
+  const password = String(req.body.password);
+  const consent = req.body.consent; 
 
   const exists = await usersStore.findByUsername(username);
-  if (exists) return res.sendStatus(409);
+  if (exists) return res.status(409).json({ error: "Username already taken." });
 
   const hash = await bcrypt.hash(password, 10);
-  const user = await usersStore.createUser(username, hash, true);
+  const user = await usersStore.createUser(username, hash, consent);
 
   return res.status(201).json({ id: user.id, username: user.username });
 });

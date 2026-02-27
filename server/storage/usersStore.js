@@ -5,7 +5,6 @@ const pool = new pg.Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-
 function toUser(row) {
   return {
     id: row.id,
@@ -26,7 +25,7 @@ async function findByUsername(username) {
 async function createUser(username, passwordHash, consent) {
   const { rows } = await pool.query(
     "INSERT INTO users (username, password_hash, consent) VALUES ($1, $2, $3) RETURNING *",
-    [username.trim().toLowerCase(), passwordHash, !!consent]
+    [username.trim().toLowerCase(), passwordHash, JSON.stringify(consent)]
   );
   return toUser(rows[0]);
 }

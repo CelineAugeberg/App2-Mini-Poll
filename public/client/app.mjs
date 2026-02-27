@@ -36,7 +36,7 @@ root.addEventListener("signup", async (e) => {
   if (!consent) return setStatus("You must accept ToS & Privacy Policy.");
 
   try {
-    await signup({ username, password, consent: true });
+    await signup({ username, password, consent });
     setStatus("User created. Now log in.");
 
  

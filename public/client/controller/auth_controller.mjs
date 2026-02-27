@@ -17,7 +17,7 @@ export async function signup({ username, password, consent }) {
 
   return api.request("/users", {
     method: "POST",
-    data: { username, password, consent: !!consent },
+    data: { username, password, consent },
   });
 }
 

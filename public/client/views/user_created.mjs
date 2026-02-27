@@ -29,7 +29,10 @@ class UserCreated extends HTMLElement {
       e.preventDefault();
       const username = this.querySelector("#signupUsername").value;
       const password = this.querySelector("#signupPassword").value;
-      const consent = this.querySelector("#signupConsent").checked;
+      const accepted = this.querySelector("#signupConsent").checked;
+      const consent = accepted
+        ? { acceptedTos: true, acceptedPrivacy: true, version: "1.0" }
+        : null;
 
       this.dispatchEvent(
         new CustomEvent("signup", {
