@@ -1,40 +1,48 @@
+import { t } from "../i18n/translations.mjs";
+
 class UserSettings extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
       <div class="card">
-        <h3>Account Settings</h3>
+        <h2>${t("accountSettings")}</h2>
 
         <div class="settings-section">
-          <h4>Change Password</h4>
-          <form id="changePasswordForm">
+          <h3>${t("changePassword")}</h3>
+          <form id="changePasswordForm" novalidate>
             <div class="form-group">
-              <label for="newPassword">New Password:</label>
-              <input type="password" id="newPassword" name="newPassword" required />
+              <label for="newPassword">${t("newPassword")}</label>
+              <input type="password" id="newPassword" name="newPassword"
+                autocomplete="new-password" required aria-required="true" />
             </div>
             <div class="form-group">
-              <label for="confirmPassword">Confirm Password:</label>
-              <input type="password" id="confirmPassword" name="confirmPassword" required />
+              <label for="confirmPassword">${t("confirmPassword")}</label>
+              <input type="password" id="confirmPassword" name="confirmPassword"
+                autocomplete="new-password" required aria-required="true" />
             </div>
-            <button type="submit" class="btn btn-primary">Update Password</button>
+            <button type="submit" class="btn btn-primary">${t("updatePassword")}</button>
           </form>
         </div>
 
         <div class="settings-section">
-          <h4>Delete Account</h4>
-          <p>Warning: This action cannot be undone.</p>
-          <button id="deleteAccountBtn" class="btn btn-danger">Delete Account</button>
+          <h3>${t("deleteAccount")}</h3>
+          <p class="danger-text">${t("deleteWarning")}</p>
+          <button id="deleteAccountBtn" class="btn btn-danger">${t("deleteAccount")}</button>
         </div>
       </div>
     `;
 
-    const changePasswordForm = this.querySelector("#changePasswordForm");
-    changePasswordForm.addEventListener("submit", (e) => {
+    this.querySelector("#changePasswordForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const newPassword = this.querySelector("#newPassword").value;
       const confirmPassword = this.querySelector("#confirmPassword").value;
 
       if (newPassword !== confirmPassword) {
-        alert("Passwords do not match!");
+        this.dispatchEvent(
+          new CustomEvent("statusmessage", {
+            bubbles: true,
+            detail: { message: t("passwordMismatch") },
+          })
+        );
         return;
       }
 
@@ -45,16 +53,11 @@ class UserSettings extends HTMLElement {
         })
       );
 
-      changePasswordForm.reset();
+      this.querySelector("#changePasswordForm").reset();
     });
 
-    const deleteBtn = this.querySelector("#deleteAccountBtn");
-    deleteBtn.addEventListener("click", () => {
-      this.dispatchEvent(
-        new CustomEvent("deleteaccount", {
-          bubbles: true,
-        })
-      );
+    this.querySelector("#deleteAccountBtn").addEventListener("click", () => {
+      this.dispatchEvent(new CustomEvent("deleteaccount", { bubbles: true }));
     });
   }
 }

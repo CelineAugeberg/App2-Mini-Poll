@@ -1,3 +1,5 @@
+import { t } from "../i18n/translations.mjs";
+
 class UserApp extends HTMLElement {
   constructor() {
     super();
@@ -15,10 +17,15 @@ class UserApp extends HTMLElement {
 
   #switchTab(tab) {
     this.querySelectorAll(".tab-btn").forEach(btn => {
-      btn.classList.toggle("active", btn.dataset.tab === tab);
+      const isActive = btn.dataset.tab === tab;
+      btn.classList.toggle("active", isActive);
+      btn.setAttribute("aria-selected", isActive ? "true" : "false");
+      btn.setAttribute("tabindex", isActive ? "0" : "-1");
     });
     this.querySelector("user-created").classList.toggle("hidden", tab !== "signup");
     this.querySelector("user-login").classList.toggle("hidden", tab !== "login");
+    this.querySelector("#panel-signup").setAttribute("aria-hidden", tab !== "signup" ? "true" : "false");
+    this.querySelector("#panel-login").setAttribute("aria-hidden", tab !== "login" ? "true" : "false");
   }
 
   prefillLogin({ username, password }) {
@@ -35,14 +42,24 @@ class UserApp extends HTMLElement {
     if (!auth || !auth.token) {
       this.innerHTML = `
         <div class="container">
-          <h2>Mini Poll</h2>
-          <p id="status" class="status"></p>
-          <div class="tabs">
-            <button class="tab-btn active" data-tab="signup">Create Account</button>
-            <button class="tab-btn" data-tab="login">Login</button>
+          <h1>${t("welcome")}</h1>
+          <p id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></p>
+          <div class="tabs" role="tablist" aria-label="${t("authTabs")}">
+            <button class="tab-btn active" role="tab" data-tab="signup"
+              aria-selected="true" aria-controls="panel-signup" id="tab-signup" tabindex="0">
+              ${t("createAccount")}
+            </button>
+            <button class="tab-btn" role="tab" data-tab="login"
+              aria-selected="false" aria-controls="panel-login" id="tab-login" tabindex="-1">
+              ${t("login")}
+            </button>
           </div>
-          <user-created></user-created>
-          <user-login class="hidden"></user-login>
+          <div id="panel-signup" role="tabpanel" aria-labelledby="tab-signup" aria-hidden="false">
+            <user-created></user-created>
+          </div>
+          <div id="panel-login" role="tabpanel" aria-labelledby="tab-login" aria-hidden="true">
+            <user-login class="hidden"></user-login>
+          </div>
         </div>
       `;
 
@@ -52,19 +69,16 @@ class UserApp extends HTMLElement {
     } else {
       this.innerHTML = `
         <div class="container">
-          <h2>Welcome, ${auth.user?.username || "User"}!</h2>
-          <p id="status" class="status"></p>
+          <h1>${t("welcomeUser", { username: auth.user?.username || "" })}</h1>
+          <p id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></p>
           <user-settings></user-settings>
-          <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+          <button id="logoutBtn" class="btn btn-secondary">${t("logout")}</button>
         </div>
       `;
 
-      const logoutBtn = this.querySelector("#logoutBtn");
-      if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-          this.dispatchEvent(new CustomEvent("logout"));
-        });
-      }
+      this.querySelector("#logoutBtn").addEventListener("click", () => {
+        this.dispatchEvent(new CustomEvent("logout"));
+      });
     }
   }
 }

@@ -1,24 +1,27 @@
+import { t } from "../i18n/translations.mjs";
+
 class UserLogin extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
       <div class="card">
-        <h3>Login</h3>
-        <form id="loginForm">
+        <h2>${t("login")}</h2>
+        <form id="loginForm" novalidate>
           <div class="form-group">
-            <label for="loginUsername">Username:</label>
-            <input type="text" id="loginUsername" name="username" required />
+            <label for="loginUsername">${t("username")}</label>
+            <input type="text" id="loginUsername" name="username"
+              autocomplete="username" required aria-required="true" />
           </div>
           <div class="form-group">
-            <label for="loginPassword">Password:</label>
-            <input type="password" id="loginPassword" name="password" required />
+            <label for="loginPassword">${t("password")}</label>
+            <input type="password" id="loginPassword" name="password"
+              autocomplete="current-password" required aria-required="true" />
           </div>
-          <button type="submit" class="btn btn-primary">Login</button>
+          <button type="submit" class="btn btn-primary">${t("login")}</button>
         </form>
       </div>
     `;
 
-    const form = this.querySelector("#loginForm");
-    form.addEventListener("submit", (e) => {
+    this.querySelector("#loginForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const username = this.querySelector("#loginUsername").value;
       const password = this.querySelector("#loginPassword").value;
@@ -33,10 +36,10 @@ class UserLogin extends HTMLElement {
   }
 
   prefill({ username, password }) {
-    const usernameInput = this.querySelector("#loginUsername");
-    const passwordInput = this.querySelector("#loginPassword");
-    if (usernameInput) usernameInput.value = username || "";
-    if (passwordInput) passwordInput.value = password || "";
+    const u = this.querySelector("#loginUsername");
+    const p = this.querySelector("#loginPassword");
+    if (u) u.value = username || "";
+    if (p) p.value = password || "";
   }
 }
 

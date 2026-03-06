@@ -3,9 +3,9 @@ import "./views/user_created.mjs";
 import "./views/user_login.mjs";
 import "./views/user_settings.mjs";
 
-
 import { signup, login, logout, getAuth } from "./controller/auth_controller.mjs";
 import { deleteMyAccount, updatePassword } from "./controller/user_controller.mjs";
+import { t } from "./i18n/translations.mjs";
 
 
 const root = document.querySelector("user-app");
@@ -31,19 +31,18 @@ root.addEventListener("signup", async (e) => {
   const { username, password, consent } = e.detail || {};
   setStatus("");
 
-  if (!username || !password) return setStatus("Username and password required.");
-  if (!consent) return setStatus("You must accept ToS & Privacy Policy.");
+  if (!username || !password) return setStatus(t("usernameRequired"));
+  if (!consent) return setStatus(t("consentRequired"));
 
   try {
     await signup({ username, password, consent });
-    setStatus("User created. Now log in.");
+    setStatus(t("userCreated"));
 
- 
     if (typeof root.prefillLogin === "function") {
       root.prefillLogin({ username, password });
     }
   } catch (err) {
-    setStatus(err.message || "Could not create user");
+    setStatus(err.message || t("couldNotCreate"));
   }
 });
 
@@ -51,14 +50,14 @@ root.addEventListener("login", async (e) => {
   const { username, password } = e.detail || {};
   setStatus("");
 
-  if (!username || !password) return setStatus("Username and password required.");
+  if (!username || !password) return setStatus(t("usernameRequired"));
 
   try {
     await login({ username, password });
     rerender();
     setStatus("");
   } catch (err) {
-    setStatus(err.message || "Wrong username or password");
+    setStatus(err.message || t("wrongCredentials"));
   }
 });
 
@@ -66,35 +65,39 @@ root.addEventListener("updatepassword", async (e) => {
   const { newPassword } = e.detail || {};
   setStatus("");
 
-  if (!newPassword) return setStatus("New password required.");
+  if (!newPassword) return setStatus(t("passwordRequired"));
 
   try {
     await updatePassword({ newPassword });
-    setStatus("Password updated successfully!");
+    setStatus(t("passwordUpdated"));
   } catch (err) {
-    setStatus(err.message || "Could not update password");
+    setStatus(err.message || t("couldNotUpdate"));
   }
 });
 
 root.addEventListener("deleteaccount", async () => {
   setStatus("");
 
-  const ok = confirm("Delete your account? This cannot be undone.");
+  const ok = confirm(t("deleteWarning"));
   if (!ok) return;
 
   try {
     await deleteMyAccount();
     rerender();
-    setStatus("Account deleted (consent revoked).");
+    setStatus(t("accountDeleted"));
   } catch (err) {
-    setStatus(err.message || "Could not delete account");
+    setStatus(err.message || t("couldNotDelete"));
   }
 });
 
 root.addEventListener("logout", () => {
   logout();
   rerender();
-  setStatus("Logged out");
+  setStatus(t("loggedOut"));
+});
+
+root.addEventListener("statusmessage", (e) => {
+  setStatus(e.detail?.message || "");
 });
 
 

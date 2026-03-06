@@ -1,31 +1,36 @@
+import { t } from "../i18n/translations.mjs";
+
 class UserCreated extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
       <div class="card">
-        <h3>Create Account</h3>
-        <form id="signupForm">
+        <h2>${t("createAccount")}</h2>
+        <form id="signupForm" novalidate>
           <div class="form-group">
-            <label for="signupUsername">Username:</label>
-            <input type="text" id="signupUsername" name="username" required />
+            <label for="signupUsername">${t("username")}</label>
+            <input type="text" id="signupUsername" name="username"
+              autocomplete="username" required aria-required="true" />
           </div>
           <div class="form-group">
-            <label for="signupPassword">Password:</label>
-            <input type="password" id="signupPassword" name="password" required />
+            <label for="signupPassword">${t("password")}</label>
+            <input type="password" id="signupPassword" name="password"
+              autocomplete="new-password" required aria-required="true" />
           </div>
           <div class="form-group">
-            <label>
-              <input type="checkbox" id="signupConsent" name="consent" required />
-              I accept the <a href="./views/tos.html" target="_blank">Terms of Service</a> and
-              <a href="./views/privacy.html" target="_blank">Privacy Policy</a>
+            <label class="checkbox-label">
+              <input type="checkbox" id="signupConsent" name="consent" required aria-required="true" />
+              ${t("tosConsent", {
+                tos: `<a href="./views/tos.html" target="_blank" rel="noopener">${t("termsOfService")}</a>`,
+                privacy: `<a href="./views/privacy.html" target="_blank" rel="noopener">${t("privacyPolicy")}</a>`,
+              })}
             </label>
           </div>
-          <button type="submit" class="btn btn-primary">Sign Up</button>
+          <button type="submit" class="btn btn-primary">${t("signUp")}</button>
         </form>
       </div>
     `;
 
-    const form = this.querySelector("#signupForm");
-    form.addEventListener("submit", (e) => {
+    this.querySelector("#signupForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const username = this.querySelector("#signupUsername").value;
       const password = this.querySelector("#signupPassword").value;

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Poll – Offline</title>
+  <link rel="stylesheet" href="/app.css" />
+  <style>
+    .offline-container {
+      max-width: 400px;
+      margin: 80px auto;
+      text-align: center;
+      background: white;
+      padding: 40px 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .offline-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    .offline-title {
+      font-size: 1.4em;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    .offline-message {
+      color: #555;
+      margin-bottom: 24px;
+    }
+  </style>
+  <script>
+    // Apply language from browser preference
+    (function () {
+      const lang = (navigator.language || "en").split("-")[0].toLowerCase();
+      const strings = {
+        en: {
+          title: "You are offline",
+          message: "Please check your internet connection and try again.",
+          back: "Go back",
+        },
+        nb: {
+          title: "Du er frakoblet",
+          message: "Sjekk internettilkoblingen din og prøv igjen.",
+          back: "Gå tilbake",
+        },
+      };
+      const s = strings[lang] || strings.en;
+      document.addEventListener("DOMContentLoaded", () => {
+        document.documentElement.lang = lang === "nb" ? "nb" : "en";
+        document.querySelector(".offline-title").textContent = s.title;
+        document.querySelector(".offline-message").textContent = s.message;
+        document.querySelector(".back-btn").textContent = s.back;
+        document.title = "Mini Poll – " + s.title;
+      });
+    })();
+  </script>
+</head>
+<body>
+  <div class="offline-container" role="main">
+    <div class="offline-icon" aria-hidden="true">📡</div>
+    <h1 class="offline-title">You are offline</h1>
+    <p class="offline-message">Please check your internet connection and try again.</p>
+    <button class="btn btn-primary back-btn" onclick="history.back()">Go back</button>
+  </div>
+</body>
+</html>

@@ -1,38 +1,26 @@
+import { msg } from "../i18n/messages.js";
 
 export default function validateUserCreate(req, res, next) {
   const { username, password, consent } = req.body;
 
+  if (!username || typeof username !== "string")
+    return res.status(400).json(msg(req, "usernameRequired"));
+  if (username.trim().length < 3)
+    return res.status(400).json(msg(req, "usernameTooShort"));
 
-  if (!username || typeof username !== "string") {
-    return res.status(400).json({ error: "username is required and must be a string" });
-  }
-  if (username.trim().length < 3) {
-    return res.status(400).json({ error: "username must be at least 3 characters" });
-  }
+  if (!password || typeof password !== "string")
+    return res.status(400).json(msg(req, "passwordRequired"));
+  if (password.length < 8)
+    return res.status(400).json(msg(req, "passwordTooShort"));
 
- 
-  if (!password || typeof password !== "string") {
-    return res.status(400).json({ error: "password is required and must be a string" });
-  }
-  if (password.trim().length < 8) {
-    return res.status(400).json({ error: "password must be at least 8 characters" });
-  }
-
- 
-  if (!consent || typeof consent !== "object") {
-    return res.status(400).json({ error: "consent is required" });
-  }
-  if (consent.acceptedTos !== true) {
-    return res.status(400).json({ error: "Terms of Service must be accepted" });
-  }
-  if (consent.acceptedPrivacy !== true) {
-    return res.status(400).json({ error: "Privacy Policy must be accepted" });
-  }
-
-  if (!consent.version || typeof consent.version !== "string") {
-    return res.status(400).json({ error: "consent.version is required" });
-  }
+  if (!consent || typeof consent !== "object")
+    return res.status(400).json(msg(req, "consentRequired"));
+  if (consent.acceptedTos !== true)
+    return res.status(400).json(msg(req, "tosRequired"));
+  if (consent.acceptedPrivacy !== true)
+    return res.status(400).json(msg(req, "privacyRequired"));
+  if (!consent.version || typeof consent.version !== "string")
+    return res.status(400).json(msg(req, "consentVersionRequired"));
 
   next();
-};
-
+}

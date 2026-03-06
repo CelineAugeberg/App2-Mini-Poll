@@ -19,19 +19,13 @@ h1 {
 }
 
 h2 {
-  color: #34495e;
+  color: #2c3e50;
   margin-bottom: 20px;
 }
 
 h3 {
   color: #2c3e50;
   margin-bottom: 15px;
-}
-
-h4 {
-  color: #34495e;
-  margin-bottom: 10px;
-  font-size: 1.1em;
 }
 
 .container {
@@ -59,36 +53,46 @@ h4 {
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
-  color: #555;
+  color: #333;
+}
+
+.checkbox-label {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 400 !important;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-top: 3px;
+  flex-shrink: 0;
 }
 
 .form-group input[type="text"],
 .form-group input[type="password"] {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #767676;
   border-radius: 4px;
   font-size: 14px;
-  transition: border-color 0.3s;
+  transition: border-color 0.2s, outline 0.2s;
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="password"]:focus {
-  outline: none;
-  border-color: #3498db;
-}
-
-.form-group input[type="checkbox"] {
-  margin-right: 8px;
+  outline: 2px solid #1565c0;
+  outline-offset: 1px;
+  border-color: #1565c0;
 }
 
 .form-group a {
-  color: #3498db;
-  text-decoration: none;
+  color: #1565c0;
+  text-decoration: underline;
 }
 
 .form-group a:hover {
-  text-decoration: underline;
+  color: #0d47a1;
 }
 
 .btn {
@@ -97,36 +101,41 @@ h4 {
   border-radius: 4px;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s;
   font-weight: 500;
 }
 
+.btn:focus-visible {
+  outline: 2px solid #1565c0;
+  outline-offset: 2px;
+}
+
 .btn-primary {
-  background-color: #3498db;
+  background-color: #1565c0;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
+  background-color: #0d47a1;
 }
 
 .btn-secondary {
-  background-color: #95a5a6;
+  background-color: #546e7a;
   color: white;
   margin-top: 10px;
 }
 
 .btn-secondary:hover {
-  background-color: #7f8c8d;
+  background-color: #37474f;
 }
 
 .btn-danger {
-  background-color: #e74c3c;
+  background-color: #c0392b;
   color: white;
 }
 
 .btn-danger:hover {
-  background-color: #c0392b;
+  background-color: #96281b;
 }
 
 .status {
@@ -139,7 +148,7 @@ h4 {
 
 .status:not(:empty) {
   background-color: #fff3cd;
-  border: 1px solid #ffc107;
+  border: 1px solid #856404;
   color: #856404;
 }
 
@@ -147,9 +156,9 @@ h4 {
   margin-bottom: 20px;
 }
 
-.settings-section p {
+.danger-text {
   margin-bottom: 15px;
-  color: #666;
+  color: #555;
 }
 
 .hidden {
@@ -169,18 +178,23 @@ h4 {
   background: none;
   font-size: 14px;
   font-weight: 500;
-  color: #95a5a6;
+  color: #555;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
+  border-bottom: 3px solid transparent;
   margin-bottom: -2px;
   transition: color 0.2s, border-color 0.2s;
 }
 
 .tab-btn:hover {
-  color: #3498db;
+  color: #1565c0;
 }
 
 .tab-btn.active {
-  color: #3498db;
-  border-bottom-color: #3498db;
+  color: #1565c0;
+  border-bottom-color: #1565c0;
+}
+
+.tab-btn:focus-visible {
+  outline: 2px solid #1565c0;
+  outline-offset: -2px;
 }
