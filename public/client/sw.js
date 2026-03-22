@@ -38,7 +38,7 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // API calls: network-only, no caching
+
   if (url.pathname.startsWith("/users") || url.pathname.startsWith("/auth")) {
     event.respondWith(
       fetch(request).catch(() =>
@@ -51,7 +51,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static assets: cache-first, fall back to offline page for navigation
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;
