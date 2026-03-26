@@ -1,5 +1,4 @@
 
-
 export default function validatePoll(req, res, next) {
   const { question, options } = req.body;
 

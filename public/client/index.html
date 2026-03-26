@@ -10,7 +10,17 @@
   <link rel="stylesheet" href="/app.css" />
 </head>
 <body>
-  <user-app></user-app>
+  <header class="site-header" role="banner">
+    <div class="site-header-inner">
+      <a href="/" class="site-logo" aria-label="Mini Poll home">
+        <img src="/icons/icon.svg" alt="" width="28" height="28" aria-hidden="true" />
+        <span>Mini Poll</span>
+      </a>
+    </div>
+  </header>
+  <main class="site-main">
+    <user-app></user-app>
+  </main>
   <script type="module" src="/app.mjs"></script>
   <script>
     if ("serviceWorker" in navigator) {

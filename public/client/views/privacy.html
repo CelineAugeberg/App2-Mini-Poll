@@ -13,25 +13,29 @@
   <ul>
     <li>Username</li>
     <li>Hashed password</li>
-    <li>Consent to this policy</li>
+    <li>Consent record (acceptance of ToS and Privacy Policy, version, and timestamp)</li>
+    <li>Polls you create (question text and answer options)</li>
+    <li>Votes cast on polls (option selected and time of vote, not linked to any user account)</li>
   </ul>
 
   <h2>How data is used</h2>
   <p>
-    The data is used only to allow users to create an account,
-    log in, and participate in the application.
+    The data is used only to allow users to create an account, log in,
+    create and share polls, and record votes on those polls.
+    No data is sold or shared with third parties.
   </p>
 
   <h2>Data storage</h2>
   <p>
-    All data is stored in memory and will be deleted when the server restarts.
-    This application is not intended for real-world use.
+    All data is stored in a persistent PostgreSQL database hosted on Render.
+    Data is retained until you delete your account or the application is shut down.
   </p>
 
   <h2>User rights</h2>
   <p>
-    You may delete your account at any time using the "Delete my account" button.
-    This removes all stored data immediately.
+    You may delete your account at any time using the "Delete Account" button in the app.
+    This removes your username, password, and consent record from the database.
+    Polls you have created and their associated votes are also deleted.
   </p>
 
   <p><em>Last updated: 2026</em></p>

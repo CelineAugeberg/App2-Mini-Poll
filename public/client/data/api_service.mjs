@@ -1,4 +1,3 @@
-
 class ApiService {
   static #instance;
 

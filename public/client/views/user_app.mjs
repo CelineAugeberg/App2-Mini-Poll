@@ -36,7 +36,7 @@ class UserApp extends HTMLElement {
     }
   }
 
-  render(auth) {
+  render(auth, polls = []) {
     this.auth = auth;
 
     if (!auth || !auth.token) {
@@ -67,17 +67,55 @@ class UserApp extends HTMLElement {
         btn.addEventListener("click", () => this.#switchTab(btn.dataset.tab));
       });
     } else {
+      const pollsHtml = polls.length === 0
+        ? `<p class="no-polls">${t("noPolls")}</p>`
+        : polls.map((p) => {
+            const total = p.options.reduce((s, o) => s + o.votes, 0);
+            const link = `${location.origin}/#poll/${p.id}`;
+            return `
+              <div class="poll-item">
+                <span class="poll-question">${p.question}</span>
+                <span class="poll-votes">${total} ${t("votes")}</span>
+                <div class="poll-actions">
+                  <a href="#poll/${p.id}" class="poll-link">${t("viewPoll")}</a>
+                  <button class="btn-copy" data-link="${link}" aria-label="${t("copyLink")}">${t("copyLink")}</button>
+                </div>
+              </div>`;
+          }).join("");
+
       this.innerHTML = `
-        <div class="container">
-          <h1>${t("welcomeUser", { username: auth.user?.username || "" })}</h1>
+        <div class="container container--wide">
+          <div class="dashboard-header">
+            <h1>${t("welcomeUser", { username: auth.user?.username || "" })}</h1>
+            <button id="logoutBtn" class="btn btn-secondary">${t("logout")}</button>
+          </div>
           <p id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></p>
-          <user-settings></user-settings>
-          <button id="logoutBtn" class="btn btn-secondary">${t("logout")}</button>
+          <div class="dashboard-grid">
+            <div class="dashboard-left">
+              <poll-create></poll-create>
+              <user-settings></user-settings>
+            </div>
+            <div class="dashboard-right">
+              <section class="polls-section" aria-label="${t("myPolls")}">
+                <h2>${t("myPolls")}</h2>
+                ${pollsHtml}
+              </section>
+            </div>
+          </div>
         </div>
       `;
 
       this.querySelector("#logoutBtn").addEventListener("click", () => {
-        this.dispatchEvent(new CustomEvent("logout"));
+        this.dispatchEvent(new CustomEvent("logout", { bubbles: true }));
+      });
+
+      this.querySelectorAll(".btn-copy").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          navigator.clipboard.writeText(btn.dataset.link).then(() => {
+            btn.textContent = t("copied");
+            setTimeout(() => { btn.textContent = t("copyLink"); }, 1500);
+          });
+        });
       });
     }
   }

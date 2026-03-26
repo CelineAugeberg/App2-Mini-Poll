@@ -1,4 +1,4 @@
-const CACHE_NAME = "mini-poll-v1";
+const CACHE_NAME = "mini-poll-v3";
 
 const STATIC_ASSETS = [
   "/",
@@ -10,11 +10,15 @@ const STATIC_ASSETS = [
   "/i18n/translations.mjs",
   "/controller/auth_controller.mjs",
   "/controller/user_controller.mjs",
+  "/controller/poll_controller.mjs",
   "/data/api_service.mjs",
   "/views/user_app.mjs",
   "/views/user_created.mjs",
   "/views/user_login.mjs",
   "/views/user_settings.mjs",
+  "/utils/poll_form.mjs",
+  "/views/poll_create.mjs",
+  "/views/poll_view.mjs",
   "/offline.html",
 ];
 
@@ -38,8 +42,11 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+ 
+  if (url.protocol !== "http:" && url.protocol !== "https:") return;
 
-  if (url.pathname.startsWith("/users") || url.pathname.startsWith("/auth")) {
+
+  if (url.pathname.startsWith("/users") || url.pathname.startsWith("/auth") || url.pathname.startsWith("/polls")) {
     event.respondWith(
       fetch(request).catch(() =>
         new Response(JSON.stringify({ error: "You are offline" }), {

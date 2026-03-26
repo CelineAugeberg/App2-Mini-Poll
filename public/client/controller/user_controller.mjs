@@ -1,4 +1,3 @@
-
 import { api } from "../data/api_service.mjs";
 import { getAuth, logout } from "./auth_controller.mjs";
 

@@ -36,7 +36,7 @@ class UserCreated extends HTMLElement {
       const password = this.querySelector("#signupPassword").value;
       const accepted = this.querySelector("#signupConsent").checked;
       const consent = accepted
-        ? { acceptedTos: true, acceptedPrivacy: true, version: "1.0" }
+        ? { acceptedTos: true, acceptedPrivacy: true, version: "1.0", timestamp: new Date().toISOString() }
         : null;
 
       this.dispatchEvent(

@@ -21,7 +21,7 @@
   },
   "version": "1.0.0",
   "description": "https://mini-poll.onrender.com",
-  "main": "index.js",
+  "main": "server/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CelineAugeberg/App2-Mini-Poll.git"

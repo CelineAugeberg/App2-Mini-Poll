@@ -30,7 +30,8 @@ router.delete("/me", validateAuth, async (req, res) => {
 
 router.patch("/me", validateAuth, async (req, res) => {
   const newPassword = String(req.body.password || "");
-  if (!newPassword) return res.sendStatus(400);
+  if (!newPassword || newPassword.length < 8)
+    return res.status(400).json({ error: "Password must be at least 8 characters." });
 
   const hash = await bcrypt.hash(newPassword, 10);
   const ok = await usersStore.updatePassword(req.token.id, hash);
